@@ -387,7 +387,7 @@ export function initLibrary({ canvas, badgeLayer, onSelectReading, onSelectModul
       const cls = a.type === "shelf" ? "scene-label scene-label-shelf"
         : a.type === "cabinet" ? "scene-label scene-label-tool" : "scene-label";
       const el = labelEl(key, cls);
-      let hide = behind || x < -40 || x > canvas.clientWidth + 40 || y < -40 || y > canvas.clientHeight + 40;
+      let hide = behind;
       if (!hide && focusPoint) {
         const dx = _aw.x - focusPoint.x, dz = _aw.z - focusPoint.z;
         if (a.type === "sign" || Math.hypot(dx, dz) > 9) hide = true;
@@ -395,9 +395,13 @@ export function initLibrary({ canvas, badgeLayer, onSelectReading, onSelectModul
       if (hide) {
         el.style.display = "none";
       } else {
+        // Keep labels inside the viewport so edge shelves never get clipped.
+        const mx = 78, myTop = 64, myBot = 26;
+        const cx = Math.max(mx, Math.min(canvas.clientWidth - mx, x));
+        const cy = Math.max(myTop, Math.min(canvas.clientHeight - myBot, y));
         el.style.display = "block";
-        el.style.left = `${x}px`;
-        el.style.top = `${y}px`;
+        el.style.left = `${cx}px`;
+        el.style.top = `${cy}px`;
         el.textContent = a.text;
       }
     });

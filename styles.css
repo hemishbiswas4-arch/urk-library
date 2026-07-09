@@ -212,21 +212,22 @@ body {
 .scene-label.scene-label-tool { color: #24405f; }
 
 .side-panel {
-  position: absolute; top: 0; right: 0; bottom: 0; z-index: 40;
+  position: absolute; top: 56px; right: 0; bottom: 0; z-index: 40;
   width: 420px; max-width: 92vw;
   background: var(--bg-elev); border-left: 1px solid var(--border);
   box-shadow: -12px 0 40px rgba(0,0,0,0.35);
   overflow-y: auto;
-  padding: 60px 22px 40px;
+  padding: 22px 22px 40px;
   animation: panel-in 0.22s ease;
 }
 @keyframes panel-in { from { transform: translateX(24px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 .panel-close {
-  position: absolute; top: 14px; right: 16px;
+  position: absolute; top: 12px; right: 14px; z-index: 2;
   background: var(--bg-elev-2); border: 1px solid var(--border); color: var(--text-dim);
-  width: 30px; height: 30px; border-radius: 8px; font-size: 18px; line-height: 1; cursor: pointer;
+  width: 34px; height: 34px; border-radius: 8px; font-size: 20px; line-height: 1; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
 }
-.panel-close:hover { color: var(--text); }
+.panel-close:hover { color: var(--text); border-color: var(--text-dimmer); }
 
 .panel-back {
   background: none; border: none; color: var(--accent-2); cursor: pointer;
@@ -235,7 +236,7 @@ body {
 .panel-back:hover { text-decoration: underline; }
 
 /* Reading panel hero — module-colour accent */
-.reading-hero { margin: -60px -22px 16px; padding: 66px 22px 16px; position: relative; }
+.reading-hero { margin: -22px -22px 16px; padding: 24px 50px 16px 22px; position: relative; }
 .reading-hero::before {
   content: ""; position: absolute; inset: 0 0 auto 0; height: 6px;
   background: var(--hero-color, var(--accent));
@@ -278,7 +279,7 @@ body {
   .topbar-right { gap: 6px; }
   .countdown { font-size: 10.5px; padding: 3px 7px; }
   .ghost-btn { padding: 5px 8px; font-size: 11px; }
-  .side-panel { width: 100%; max-width: 100%; padding-top: 56px; }
+  .side-panel { width: 100%; max-width: 100%; top: 50px; padding-top: 22px; }
   .hint-toast { font-size: 11.5px; padding: 7px 12px; bottom: 12px; max-width: 90vw; text-align: center; }
 }
 
