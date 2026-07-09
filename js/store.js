@@ -1,5 +1,5 @@
-import { subscribeCollection, setDocById, safeId } from "./dataService.js";
-import { subscribeMembers } from "./auth.js";
+import { subscribeCollection, setDocById, safeId } from "./dataService.js?v=20260709b";
+import { subscribeMembers } from "./auth.js?v=20260709b";
 
 export const STATE = {
   members: [],

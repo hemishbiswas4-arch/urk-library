@@ -1,13 +1,13 @@
 import {
   MODULES, RUBRIC, RULES, PLAN, PLAN_NOTE, RECENCY_CHECKLIST,
   PARTY_QUESTIONS, FACT_BANK_SEED, VOCAB, OPTIONS_PROPOSALS, TIERS,
-} from "../data/content.js";
-import { TOOL_STATIONS } from "../data/tools.js";
-import { MODULE_COLORS, SHELF_SHORT } from "../data/palette.js";
-import { addDoc, setDocById, deleteDocById, safeId } from "./dataService.js";
-import { getMe } from "./auth.js";
-import { STATE, notesFor, isDoneBy, toggleProgress, membersWhoDid } from "./store.js";
-import { escapeHtml, timeAgo, colorFor } from "./utils.js";
+} from "../data/content.js?v=20260709b";
+import { TOOL_STATIONS } from "../data/tools.js?v=20260709b";
+import { MODULE_COLORS, SHELF_SHORT } from "../data/palette.js?v=20260709b";
+import { addDoc, setDocById, deleteDocById, safeId } from "./dataService.js?v=20260709b";
+import { getMe } from "./auth.js?v=20260709b";
+import { STATE, notesFor, isDoneBy, toggleProgress, membersWhoDid } from "./store.js?v=20260709b";
+import { escapeHtml, timeAgo, colorFor } from "./utils.js?v=20260709b";
 
 const panelEl = document.getElementById("side-panel");
 const contentEl = document.getElementById("panel-content");

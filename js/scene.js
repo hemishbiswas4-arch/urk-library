@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import { MODULES } from "../data/content.js";
-import { TOOL_STATIONS } from "../data/tools.js";
-import { MODULE_COLORS, SHELF_SHORT } from "../data/palette.js";
+import { MODULES } from "../data/content.js?v=20260709b";
+import { TOOL_STATIONS } from "../data/tools.js?v=20260709b";
+import { MODULE_COLORS, SHELF_SHORT } from "../data/palette.js?v=20260709b";
 
 // One hue per module (validated CVD-safe categorical palette) → each shelf
 // reads as a single identifiable colour.
@@ -217,7 +217,6 @@ export function initLibrary({ canvas, badgeLayer, onSelectReading, onSelectModul
     const rows = [[], [], []];
     mod.readings.forEach((r, i) => rows[i % 3].push(r));
 
-    const flipSpine = side === "right"; // keep spine text upright on both walls
     rows.forEach((rowReadings, rowIdx) => {
       if (!rowReadings.length) return;
       const y = boardYs[rowIdx];
@@ -234,8 +233,6 @@ export function initLibrary({ canvas, badgeLayer, onSelectReading, onSelectModul
         const bookColorHex = tint.clone().lerp(new THREE.Color(0xffffff), style.lighten).getHex();
         const plainMat = new THREE.MeshStandardMaterial({ color: bookColorHex, roughness: 0.55, emissive: 0x000000 });
         const spineTex = makeSpineTexture(shortenTitle(reading.title), bookColorHex, reading.depth);
-        spineTex.center.set(0.5, 0.5);
-        spineTex.repeat.set(flipSpine ? -1 : 1, 1);
         const spineMat = new THREE.MeshStandardMaterial({ map: spineTex, roughness: 0.6, emissive: 0x000000 });
         // Box face order: [ +x, -x, +y, -y, +z, -z ]; +z is the spine facing the room.
         const mats = [plainMat, plainMat, plainMat, plainMat, spineMat, plainMat];
