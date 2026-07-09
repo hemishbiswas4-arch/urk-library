@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AENC 2026 — The URK Library</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏛️</text></svg>" />
+  <link rel="stylesheet" href="styles.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="login-screen" class="login-screen">
+    <div class="login-card">
+      <div class="login-emoji">🏛️</div>
+      <h1>The URK Library</h1>
+      <p class="login-sub">AENC 2026 · Team of 3 · Government of URK · NUS, 17–19 Jul 2026</p>
+      <form id="login-form">
+        <label>Your name
+          <input id="login-name" type="text" placeholder="e.g. Priya" autocomplete="name" required maxlength="24" />
+        </label>
+        <label>Team PIN
+          <input id="login-pin" type="password" inputmode="numeric" placeholder="Shared team PIN" autocomplete="off" required maxlength="12" />
+        </label>
+        <button type="submit">Enter the library</button>
+        <p id="login-error" class="login-error" hidden></p>
+      </form>
+      <p class="login-hint">First time? Agree on a PIN as a team and have everyone use the same one — it just keeps the library private to the three of you.</p>
+      <p id="backend-status" class="backend-status"></p>
+    </div>
+  </div>
+
+  <div id="app" class="app" hidden>
+    <canvas id="scene-canvas"></canvas>
+
+    <div id="webgl-error" class="webgl-error" hidden>
+      <div class="card" style="max-width:420px;text-align:center;">
+        <strong>Your browser can't render the 3D library.</strong>
+        <p style="color:var(--text-dim);font-size:13px;margin-top:8px;">Try a recent version of Chrome, Firefox, Edge, or Safari, or enable hardware acceleration.</p>
+      </div>
+    </div>
+
+    <header class="topbar">
+      <div class="brand">🏛️ <span>The URK Library</span></div>
+      <div id="breadcrumb" class="breadcrumb">
+        <button id="back-btn" class="ghost-btn" hidden>← Overview</button>
+        <span id="breadcrumb-label">Library overview</span>
+      </div>
+      <div class="topbar-right">
+        <span id="whoami" class="whoami"></span>
+        <span id="countdown" class="countdown"></span>
+        <button id="logout-btn" class="ghost-btn">Switch user</button>
+      </div>
+    </header>
+
+    <div id="hint-toast" class="hint-toast">Click a shelf or desk to walk over · click a book to open it · scroll to zoom</div>
+
+    <button id="index-toggle" class="index-toggle" aria-expanded="false">☰&nbsp; Directory</button>
+    <aside id="index-panel" class="index-panel" hidden></aside>
+
+    <div id="badge-layer" class="badge-layer"></div>
+
+    <div id="side-panel" class="side-panel" hidden>
+      <button id="panel-close" class="panel-close">×</button>
+      <div id="panel-content" class="panel-content"></div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
