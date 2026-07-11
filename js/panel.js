@@ -1,13 +1,13 @@
 import {
   MODULES, RUBRIC, RULES, PLAN, PLAN_NOTE, RECENCY_CHECKLIST,
   PARTY_QUESTIONS, FACT_BANK_SEED, VOCAB, OPTIONS_PROPOSALS, TIERS,
-} from "../data/content.js?v=20260711a";
-import { TOOL_STATIONS } from "../data/tools.js?v=20260711a";
-import { MODULE_COLORS, SHELF_SHORT } from "../data/palette.js?v=20260711a";
-import { addDoc, setDocById, deleteDocById, safeId } from "./dataService.js?v=20260711a";
-import { getMe } from "./auth.js?v=20260711a";
-import { STATE, notesFor, isDoneBy, toggleProgress, membersWhoDid } from "./store.js?v=20260711a";
-import { escapeHtml, timeAgo, colorFor } from "./utils.js?v=20260711a";
+} from "../data/content.js?v=20260711f";
+import { TOOL_STATIONS } from "../data/tools.js?v=20260711f";
+import { MODULE_COLORS, SHELF_SHORT } from "../data/palette.js?v=20260711f";
+import { addDoc, setDocById, deleteDocById, safeId } from "./dataService.js?v=20260711f";
+import { getMe } from "./auth.js?v=20260711f";
+import { STATE, notesFor, isDoneBy, toggleProgress, membersWhoDid } from "./store.js?v=20260711f";
+import { escapeHtml, timeAgo, colorFor } from "./utils.js?v=20260711f";
 
 const panelEl = document.getElementById("side-panel");
 const contentEl = document.getElementById("panel-content");

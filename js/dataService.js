@@ -3,7 +3,7 @@
 // store (with cross-tab sync via the `storage` event) so the app is fully
 // functional standalone, with no setup required.
 
-import { firebaseConfig } from "../firebase-config.js?v=20260711a";
+import { firebaseConfig } from "../firebase-config.js?v=20260711f";
 
 const isConfigured = Object.values(firebaseConfig).every(
   (v) => typeof v === "string" && v && !v.startsWith("YOUR_")

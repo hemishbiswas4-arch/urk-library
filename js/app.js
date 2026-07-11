@@ -1,11 +1,11 @@
-import { MODULES } from "../data/content.js?v=20260711a";
-import { TOOL_STATIONS } from "../data/tools.js?v=20260711a";
-import { MODULE_COLORS, SHELF_SHORT } from "../data/palette.js?v=20260711a";
-import { backendMode } from "./dataService.js?v=20260711a";
-import { getMe, clearMe, attemptLogin } from "./auth.js?v=20260711a";
-import { bootStore, STATE, onChange, noteCountFor, isDoneBy } from "./store.js?v=20260711a";
-import * as panel from "./panel.js?v=20260711a";
-import { initLibrary } from "./scene.js?v=20260711a";
+import { MODULES } from "../data/content.js?v=20260711f";
+import { TOOL_STATIONS } from "../data/tools.js?v=20260711f";
+import { MODULE_COLORS, SHELF_SHORT } from "../data/palette.js?v=20260711f";
+import { backendMode } from "./dataService.js?v=20260711f";
+import { getMe, clearMe, attemptLogin } from "./auth.js?v=20260711f";
+import { bootStore, STATE, onChange, noteCountFor, isDoneBy } from "./store.js?v=20260711f";
+import * as panel from "./panel.js?v=20260711f";
+import { initLibrary } from "./scene.js?v=20260711f";
 
 let ME = getMe();
 let library = null;

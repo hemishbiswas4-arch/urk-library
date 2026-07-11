@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import { MODULES } from "../data/content.js?v=20260711a";
-import { TOOL_STATIONS } from "../data/tools.js?v=20260711a";
-import { MODULE_COLORS, SHELF_SHORT } from "../data/palette.js?v=20260711a";
+import { MODULES } from "../data/content.js?v=20260711f";
+import { TOOL_STATIONS } from "../data/tools.js?v=20260711f";
+import { MODULE_COLORS, SHELF_SHORT } from "../data/palette.js?v=20260711f";
 
 // One hue per module (validated CVD-safe categorical palette) → each shelf
 // reads as a single identifiable colour.
@@ -352,6 +352,247 @@ export function initLibrary({ canvas, badgeLayer, onSelectReading, onSelectModul
   sign.position.set(0, 5.7, -ROOM.hd + 0.2);
   scene.add(sign);
   labelAnchors.push({ type: "sign", id: "sign", obj: sign, text: "AENC 2026 · The URK Library" });
+
+  // ---------------------------------------------------------------------
+  // Decor — none of this is interactive/raycast-registered on purpose, it's
+  // set dressing only. Minimalist procedural mockups (no external images),
+  // consistent with the rest of the room's low-poly style.
+  // ---------------------------------------------------------------------
+
+  // ---- Wall-mounted AC unit (back wall, up high) ----
+  {
+    const acGroup = new THREE.Group();
+    acGroup.position.set(13.2, 6.35, -ROOM.hd + 0.16);
+    scene.add(acGroup);
+    const acBody = new THREE.Mesh(
+      new THREE.BoxGeometry(1.7, 0.4, 0.28),
+      new THREE.MeshStandardMaterial({ color: 0xf2f3f0, roughness: 0.4 })
+    );
+    acGroup.add(acBody);
+    const acGrille = new THREE.Mesh(
+      new THREE.BoxGeometry(1.5, 0.16, 0.03),
+      new THREE.MeshStandardMaterial({ color: 0xb7bcb8, roughness: 0.6 })
+    );
+    acGrille.position.set(0, -0.05, 0.15);
+    acGroup.add(acGrille);
+    const acLight = new THREE.Mesh(
+      new THREE.SphereGeometry(0.025, 8, 8),
+      new THREE.MeshStandardMaterial({ color: 0x6fd6ff, emissive: 0x6fd6ff, emissiveIntensity: 0.9 })
+    );
+    acLight.position.set(0.7, 0.05, 0.15);
+    acGroup.add(acLight);
+  }
+
+  // ---- Framed wall art (simple canvas-generated abstract prints) ----
+  function makeArtTexture(hueHex) {
+    const c = document.createElement("canvas");
+    c.width = 256; c.height = 320;
+    const ctx = c.getContext("2d");
+    ctx.fillStyle = "#f7f5ef";
+    ctx.fillRect(0, 0, c.width, c.height);
+    const base = new THREE.Color(hueHex);
+    ctx.fillStyle = `#${base.getHexString()}`;
+    ctx.beginPath();
+    ctx.arc(c.width * 0.5, c.height * 0.42, 70, 0, Math.PI * 2);
+    ctx.fill();
+    const soft = base.clone().lerp(new THREE.Color(0xffffff), 0.55);
+    ctx.strokeStyle = `#${soft.getHexString()}`;
+    ctx.lineWidth = 10;
+    ctx.beginPath();
+    ctx.moveTo(30, c.height - 60);
+    ctx.lineTo(c.width - 30, c.height - 110);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(30, c.height - 40);
+    ctx.lineTo(c.width - 30, c.height - 90);
+    ctx.stroke();
+    return new THREE.CanvasTexture(c);
+  }
+  function addWallArt(x, z, hue) {
+    // Mounted flat on the back wall, facing +z (out into the room) — no rotation needed.
+    const group = new THREE.Group();
+    group.position.set(x, 4.3, z);
+    scene.add(group);
+    const frame = new THREE.Mesh(
+      new THREE.BoxGeometry(1.5, 1.9, 0.08),
+      new THREE.MeshStandardMaterial({ color: 0x5b4636, roughness: 0.7 })
+    );
+    group.add(frame);
+    const art = new THREE.Mesh(
+      new THREE.PlaneGeometry(1.28, 1.68),
+      new THREE.MeshStandardMaterial({ map: makeArtTexture(hue), roughness: 0.9 })
+    );
+    art.position.z = 0.045;
+    group.add(art);
+  }
+  addWallArt(-9.2, -ROOM.hd + 0.09, MODULE_HUES[2]);
+  addWallArt(9.2, -ROOM.hd + 0.09, MODULE_HUES[6]);
+
+  // ---- Potted plants (procedural, flank the entrance) ----
+  function addPlant(x, z, scale = 1) {
+    const group = new THREE.Group();
+    group.position.set(x, 0, z);
+    group.scale.setScalar(scale);
+    scene.add(group);
+    const pot = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.24, 0.19, 0.34, 12),
+      new THREE.MeshStandardMaterial({ color: 0xb5673f, roughness: 0.8 })
+    );
+    pot.position.y = 0.17;
+    group.add(pot);
+    const trunk = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.035, 0.045, 0.4, 6),
+      new THREE.MeshStandardMaterial({ color: 0x5c4632, roughness: 0.8 })
+    );
+    trunk.position.y = 0.52;
+    group.add(trunk);
+    const foliageMat = new THREE.MeshStandardMaterial({ color: 0x3f8a5a, roughness: 0.85 });
+    [[0, 0.95, 0, 0.36], [0.16, 0.78, 0.1, 0.26], [-0.18, 0.82, -0.12, 0.24], [0.05, 1.18, -0.08, 0.24]]
+      .forEach(([dx, dy, dz, r]) => {
+        const leaf = new THREE.Mesh(new THREE.IcosahedronGeometry(r, 0), foliageMat);
+        leaf.position.set(dx, dy, dz);
+        group.add(leaf);
+      });
+  }
+  addPlant(-18.7, 11.5, 1.1);
+  addPlant(18.7, 11.5, 1.1);
+
+  // ---- Reading corner — a semi-screened nook, tucked in the back-left ----
+  // corner where two people could sit and talk without being in the main
+  // sightline. A folding screen angles across the open side; a warm rug,
+  // low table with a clock, and a floor lamp finish the space.
+  {
+    const nx = -14.6, nz = -11.3;
+
+    // distinct carpet under the nook, warmer than the main hall rug
+    const nookRug = new THREE.Mesh(
+      new THREE.PlaneGeometry(5.6, 4.6),
+      new THREE.MeshStandardMaterial({ color: 0xcf9d6b, roughness: 1 })
+    );
+    nookRug.rotation.x = -Math.PI / 2;
+    nookRug.position.set(nx, 0.012, nz);
+    scene.add(nookRug);
+    const nookRugTrim = new THREE.Mesh(
+      new THREE.RingGeometry(2.7, 2.85, 4, 1),
+      new THREE.MeshStandardMaterial({ color: 0x8a5a34, roughness: 1 })
+    );
+    nookRugTrim.rotation.x = -Math.PI / 2;
+    nookRugTrim.position.set(nx, 0.013, nz);
+    scene.add(nookRugTrim);
+
+    // two armchairs, facing each other
+    const chairFabric = new THREE.MeshStandardMaterial({ color: 0x5a7a8a, roughness: 0.9 });
+    const chairWood = new THREE.MeshStandardMaterial({ color: 0x6b4e35, roughness: 0.7 });
+    function addArmchair(cx, cz, facingPositiveX) {
+      const g = new THREE.Group();
+      g.position.set(cx, 0, cz);
+      g.rotation.y = facingPositiveX ? Math.PI / 2 : -Math.PI / 2;
+      scene.add(g);
+      const seat = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.15, 0.8), chairFabric);
+      seat.position.y = 0.42;
+      g.add(seat);
+      const back = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.75, 0.14), chairFabric);
+      back.position.set(0, 0.78, -0.33);
+      g.add(back);
+      [-0.42, 0.42].forEach((ax) => {
+        const arm = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.4, 0.8), chairFabric);
+        arm.position.set(ax, 0.55, 0);
+        g.add(arm);
+      });
+      [[-0.35, -0.3], [0.35, -0.3], [-0.35, 0.3], [0.35, 0.3]].forEach(([lx, lz]) => {
+        const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.34, 6), chairWood);
+        leg.position.set(lx, 0.17, lz);
+        g.add(leg);
+      });
+    }
+    addArmchair(nx - 1.5, nz, true);
+    addArmchair(nx + 1.5, nz, false);
+
+    // small round table between them, with a clock on top
+    const tableTop = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.55, 0.55, 0.06, 20),
+      new THREE.MeshStandardMaterial({ color: 0x8a6a48, roughness: 0.6 })
+    );
+    tableTop.position.set(nx, 0.5, nz);
+    scene.add(tableTop);
+    const tableLeg = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.06, 0.09, 0.47, 10),
+      chairWood
+    );
+    tableLeg.position.set(nx, 0.235, nz);
+    scene.add(tableLeg);
+
+    // a small table clock (canvas clock-face texture)
+    const clockCanvas = document.createElement("canvas");
+    clockCanvas.width = 128; clockCanvas.height = 128;
+    const cctx = clockCanvas.getContext("2d");
+    cctx.fillStyle = "#f7f4ec";
+    cctx.beginPath(); cctx.arc(64, 64, 60, 0, Math.PI * 2); cctx.fill();
+    cctx.strokeStyle = "#2a2a26"; cctx.lineWidth = 5;
+    cctx.beginPath(); cctx.arc(64, 64, 58, 0, Math.PI * 2); cctx.stroke();
+    cctx.fillStyle = "#2a2a26";
+    for (let i = 0; i < 12; i++) {
+      const a = (i / 12) * Math.PI * 2;
+      cctx.beginPath();
+      cctx.arc(64 + Math.sin(a) * 50, 64 - Math.cos(a) * 50, 3, 0, Math.PI * 2);
+      cctx.fill();
+    }
+    cctx.lineWidth = 4; cctx.lineCap = "round";
+    cctx.beginPath(); cctx.moveTo(64, 64); cctx.lineTo(64 + 28, 64 - 14); cctx.stroke(); // hour hand ~2 o'clock
+    cctx.lineWidth = 3;
+    cctx.beginPath(); cctx.moveTo(64, 64); cctx.lineTo(64 - 6, 64 - 42); cctx.stroke(); // minute hand ~11
+    const clockTex = new THREE.CanvasTexture(clockCanvas);
+    const clockBody = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.13, 0.13, 0.035, 20),
+      new THREE.MeshStandardMaterial({ color: 0xd8b45a, roughness: 0.35, metalness: 0.4 })
+    );
+    clockBody.position.set(nx + 0.18, 0.55, nz - 0.12);
+    scene.add(clockBody);
+    const clockFace = new THREE.Mesh(
+      new THREE.CircleGeometry(0.115, 20),
+      new THREE.MeshStandardMaterial({ map: clockTex, roughness: 0.5 })
+    );
+    clockFace.rotation.x = -Math.PI / 2;
+    clockFace.position.set(nx + 0.18, 0.569, nz - 0.12);
+    scene.add(clockFace);
+
+    // floor lamp for warmth beside one chair
+    const lampPole = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.025, 0.03, 1.5, 8),
+      new THREE.MeshStandardMaterial({ color: 0x3a3a38, roughness: 0.6 })
+    );
+    lampPole.position.set(nx - 2.6, 0.75, nz + 0.9);
+    scene.add(lampPole);
+    const lampShade = new THREE.Mesh(
+      new THREE.ConeGeometry(0.32, 0.4, 16, 1, true),
+      new THREE.MeshStandardMaterial({ color: 0xf0dfb8, emissive: 0xf0dfb8, emissiveIntensity: 0.5, side: THREE.DoubleSide })
+    );
+    lampShade.position.set(nx - 2.6, 1.55, nz + 0.9);
+    scene.add(lampShade);
+    const lampGlow = new THREE.PointLight(0xffe6b0, 0.7, 6);
+    lampGlow.position.set(nx - 2.6, 1.4, nz + 0.9);
+    scene.add(lampGlow);
+
+    // folding privacy screen — angled across the nook's open corner so two
+    // people here are softened from the main sightline without being sealed in
+    const screenMat = new THREE.MeshStandardMaterial({ color: 0x7c93a0, roughness: 0.85 });
+    const screenFrameMat = new THREE.MeshStandardMaterial({ color: 0x4a3826, roughness: 0.7 });
+    const screenGroup = new THREE.Group();
+    screenGroup.position.set(nx + 3.0, 0, nz + 1.7);
+    screenGroup.rotation.y = -Math.PI / 5;
+    scene.add(screenGroup);
+    const panelW = 1.1, panelH = 1.85;
+    for (let p = 0; p < 3; p++) {
+      const panel = new THREE.Mesh(new THREE.BoxGeometry(panelW, panelH, 0.05), screenMat);
+      panel.position.set((p - 1) * (panelW + 0.03), panelH / 2, 0);
+      panel.rotation.y = (p - 1) * 0.32;
+      screenGroup.add(panel);
+      const trim = new THREE.Mesh(new THREE.BoxGeometry(panelW + 0.05, 0.06, 0.07), screenFrameMat);
+      trim.position.set((p - 1) * (panelW + 0.03), panelH + 0.02, 0);
+      trim.rotation.y = (p - 1) * 0.32;
+      screenGroup.add(trim);
+    }
+  }
 
   // ---------------------------------------------------------------------
   // Badge / label DOM layer
