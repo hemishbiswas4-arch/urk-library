@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import { MODULES } from "../data/content.js?v=20260709b";
-import { TOOL_STATIONS } from "../data/tools.js?v=20260709b";
-import { MODULE_COLORS, SHELF_SHORT } from "../data/palette.js?v=20260709b";
+import { MODULES } from "../data/content.js?v=20260711a";
+import { TOOL_STATIONS } from "../data/tools.js?v=20260711a";
+import { MODULE_COLORS, SHELF_SHORT } from "../data/palette.js?v=20260711a";
 
 // One hue per module (validated CVD-safe categorical palette) → each shelf
 // reads as a single identifiable colour.
@@ -213,13 +213,26 @@ export function initLibrary({ canvas, badgeLayer, onSelectReading, onSelectModul
       addInteractive(post, "shelf", mod.id);
     });
 
-    // distribute readings across the 3 boards
-    const rows = [[], [], []];
-    mod.readings.forEach((r, i) => rows[i % 3].push(r));
+    // Readings are pre-sequenced foundational→advanced in content.js. Chunk them
+    // consecutively (not round-robin) so the shelf reads like a page: the first
+    // third sits left→right on the TOP board, the middle third on the middle
+    // board, and the most advanced third along the BOTTOM board.
+    const total = mod.readings.length;
+    const base = Math.floor(total / 3);
+    const rem = total % 3;
+    const chunks = [];
+    let cursor = 0;
+    for (let c = 0; c < 3; c++) {
+      const size = base + (c < rem ? 1 : 0);
+      chunks.push(mod.readings.slice(cursor, cursor + size));
+      cursor += size;
+    }
+    // chunks[0] (basic) → top board (boardYs[2]); chunks[2] (advanced) → bottom (boardYs[0]).
+    const rowBoardY = [boardYs[2], boardYs[1], boardYs[0]];
 
-    rows.forEach((rowReadings, rowIdx) => {
+    chunks.forEach((rowReadings, rowIdx) => {
       if (!rowReadings.length) return;
-      const y = boardYs[rowIdx];
+      const y = rowBoardY[rowIdx];
       // Comfortable, fairly uniform spine width, left-aligned so a part-full
       // shelf looks like a real one rather than a floating cluster.
       const gap = 0.06;

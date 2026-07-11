@@ -1,4 +1,4 @@
-import { subscribeCollection, addDoc, setDocById, safeId } from "./dataService.js?v=20260709b";
+import { subscribeCollection, addDoc, setDocById, safeId } from "./dataService.js?v=20260711a";
 
 const ME_KEY = "aenc_me";
 
